@@ -1,0 +1,259 @@
+[project]
+name = "FastAPI-ArchiPy-Boilerplate"
+description = "A simple FastAPI boilerplate using ArchiPy's clean architecture principles."
+authors = [
+    { name = "Hossein Nejati", email = "hosseinnejati14@gmail.com" },
+]
+readme = "README.md"
+version = "0.1.0" # This vesrion set on publish flow!
+requires-python = ">=3.13,<4"
+dependencies = [
+    "archipy[fastapi,aiosqlite,sqlalchemy,dependency-injection] (>=0.11.1,<0.12.0)"
+]
+license = { file = "LICENSE" }
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-asyncio = "^0.23.7"
+pre-commit = "^3.7.1"
+pre-commit-hooks = "^4.6.0"
+codespell = "^2.4.1"
+ruff = "^0.7.4"
+black = "^24.4.2"
+add-trailing-comma = "^3.1.0"
+validate-pyproject = "^0.18"
+mypy = "^1.14.1"
+behave = "^1.2.6"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = 'tests'
+markers = []
+filterwarnings = [
+    'error',
+    'ignore:This is a placeholder until pydantic-settings.*:UserWarning',
+    'ignore::UserWarning',
+    'ignore::DeprecationWarning'
+]
+
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[project.urls]
+Homepage = "https://syntaxarc.github.io/FastAPI-ArchiPy-Boilerplate/"
+"Bug Tracker" = "https://github.com/SyntaxArc/FastAPI-ArchiPy-Boilerplate/issues"
+"Source Code" = "https://github.com/SyntaxArc/FastAPI-ArchiPy-Boilerplate"
+"Contributing" = "https://github.com/SyntaxArc/FastAPI-ArchiPy-Boilerplate/blob/master/CONTRIBUTING.md"
+"Code of Conduct" = "https://github.com/SyntaxArc/FastAPI-ArchiPy-Boilerplate/blob/master/CODE_OF_CONDUCT.md"
+
+
+[tool.black]
+# Enable colored output
+color = true
+
+# Set the maximum line length
+line-length = 120
+
+# Target Python version
+target-version = ["py313"]
+
+# Skip string normalization (useful for projects with mixed quote styles)
+skip-string-normalization = false
+
+# Exclude specific files and directories
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations  # Exclude database migration files
+  | node_modules  # Exclude Node.js dependencies
+  | __pycache__  # Exclude Python cache directories
+)/
+'''
+
+[tool.ruff]
+# Enable automatic fixes for supported rules
+fix = true
+
+lint.select = [
+    "ALL", # Enable all rules by default
+    "D", # pydocstyle for docstring linting
+    "ERA", # flake8-eradicate for detecting commented-out code
+    "F841", # Unused variable
+    "I001", # isort for import sorting
+    "N", # flake8-naming for naming conventions
+    "PTH", # flake8-use-pathlib for pathlib recommendations
+    "Q", # flake8-quotes for quote consistency
+    "RET", # flake8-return for return statement linting
+    "S", # flake8-bandit for security linting
+    "SIM", # flake8-simplify for simplifying code
+    "TCH", # flake8-type-checking for type-checking imports
+    "TRY", # flake8-try-except for better exception handling
+    "UP", # pyupgrade rules for modern Python features
+]
+
+# Explicitly ignore specific rules
+lint.ignore = [
+    "C901", # Function is too complex (McCabe complexity)
+    "RUF001", "RUF003", # String contains ambiguous characters
+    "PLR2004", # Magic value used in comparison
+    "Q000", # Allow single quotes (conflicts with Black's double-quote preference)
+    "TCH002", # Type-checking import issues
+    "PLR0913", # Too many arguments in function (e.g., FastAPI Swagger)
+    "E501", # Line too long (handled by Black)
+    "F811", # Redefinition of unused function
+    "S101", # Ignore assert used (equivalent to bandit's B101)
+    "S403", # Ignore pickle usage (equivalent to bandit's B403)
+    "S301", # Ignore pickle usage (equivalent to bandit's B301)
+    "D100", # Missing docstring in public module
+    "D104", # Missing docstring in public package
+]
+
+# Define source directories
+src = ["src", "tests", "features"]
+
+exclude = [
+    "features/*",
+    "scripts/*",
+]
+
+# Set line length to match Black's configuration
+line-length = 120
+
+# Target Python version
+target-version = "py313"
+
+# Per-file ignores
+[tool.ruff.lint.per-file-ignores]
+# Ignore F811 (redefinition of function) in steps implementations
+"features/steps/*" = ["F811"]
+"scripts/*" = ["S603", "S607"]
+
+# Configure McCabe complexity
+[tool.ruff.lint.mccabe]
+max-complexity = 10  # Maximum allowed McCabe complexity
+
+# Configure Pylint rules
+[tool.ruff.lint.pylint]
+max-args = 5  # Maximum number of function arguments
+max-branches = 16  # Maximum number of branches in a function
+max-returns = 16  # Maximum number of return statements in a function
+max-statements = 50  # Maximum number of statements in a function
+
+# Configure isort (import sorting)
+[tool.ruff.lint.isort]
+combine-as-imports = true  # Combine `import` and `from ... import` statements
+known-first-party = ["src"]  # Treat `src` as a first-party module
+section-order = [
+    "future", # `__future__` imports
+    "standard-library", # Standard library imports
+    "third-party", # Third-party imports
+    "first-party", # First-party imports (e.g., `src`)
+    "local-folder", # Local folder imports
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"  # Use double quotes for inline strings
+multiline-quotes = "single"  # Use single quotes for multiline strings
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"  # Use Google-style docstrings
+
+[tool.mypy]
+# Enable checking of untyped function definitions
+check_untyped_defs = true
+
+# Disallow using `Any` in generic types
+disallow_any_generics = false
+
+# Disallow incomplete type definitions
+disallow_incomplete_defs = true
+
+# Disallow subclassing `Any`
+disallow_subclassing_any = true
+
+# Disallow calling untyped functions
+disallow_untyped_calls = true
+
+# Disallow untyped decorators
+disallow_untyped_decorators = true
+
+# Disallow untyped function definitions
+disallow_untyped_defs = true
+
+# Follow imports silently
+follow_imports = "silent"
+
+# Disallow implicit re-exports
+no_implicit_reexport = true
+
+# Enable pretty output
+pretty = true
+
+# Target Python version
+python_version = "3.13"
+
+# Show error codes
+show_error_codes = true
+
+# Show error context
+show_error_context = true
+
+# Enable strict optional checking
+strict_optional = true
+
+# Warn about missing return statements
+warn_no_return = true
+
+# Warn about redundant casts
+warn_redundant_casts = true
+
+# Warn about returning `Any`
+warn_return_any = true
+
+# Warn about unreachable code
+warn_unreachable = true
+
+# Warn about unused configs
+warn_unused_configs = true
+
+# Warn about unused `# type: ignore` comments
+warn_unused_ignores = true
+
+# Enable Pydantic plugin for better type checking
+plugins = [
+    "pydantic.mypy", # Pydantic plugin for better type checking
+    #    "sqlalchemy.ext.mypy.plugin", # SQLAlchemy plugin for ORM type checking
+    #    "fastapi.mypy", # FastAPI plugin for route and dependency type checking
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "features.*", # Apply overrides to features files
+    "scripts.*", # Apply overrides to script files
+    "redis.*", # Apply overrides to Redis
+    "grpc.*", # Apply overrides to gRPC
+    "google.protobuf.*", # Apply overrides to protobuf
+    "requests.*", # Apply overrides to requests
+    "jdatetime.*", # Apply overrides to jdatetime
+    "sentry_sdk.*", # Apply overrides to sentry-sdk
+    "apscheduler.*", # Apply overrides to apscheduler
+    "archipy.*", # Apply overrides to archipy
+]
+ignore_missing_imports = true
+
+[tool.config]
+pyproject_root_var = "pyproject"

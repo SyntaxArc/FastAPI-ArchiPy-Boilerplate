@@ -1,0 +1,90 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check-added-large-files
+        name: check-added-large-files
+        entry: poetry run check-added-large-files
+        language: system
+      - id: check-yaml
+        name: check-yaml
+        entry: poetry run check-yaml
+        types:
+          - yaml
+        language: system
+      - id: check-toml
+        name: check-toml
+        entry: poetry run check-toml
+        types:
+          - toml
+        language: system
+      - id: check-json
+        name: check-json
+        entry: poetry run check-json
+        types:
+          - json
+        language: system
+      - id: pretty-format-json
+        name: pretty-format-json
+        entry: poetry run pretty-format-json
+        types:
+          - json
+        language: system
+      - id: end-of-file-fixer
+        name: end-of-file-fixer
+        entry: poetry run end-of-file-fixer
+        language: system
+      - id: trailing-whitespace-fixer
+        name: trailing-whitespace-fixer
+        entry: poetry run trailing-whitespace-fixer
+        language: system
+      - id: poetry-check
+        name: poetry-check
+        entry: poetry check
+        language: system
+        pass_filenames: false
+      - id: poetry-lock
+        name: poetry-lock
+        entry: poetry lock
+        language: system
+        pass_filenames: false
+        stages:
+          - post-checkout
+          - post-merge
+      - id: poetry-install
+        name: poetry-install
+        entry: poetry install
+        language: system
+        pass_filenames: false
+        stages:
+          - post-checkout
+          - post-merge
+      - id: codespell
+        name: codespell
+        entry: poetry run codespell --toml pyproject.toml
+        files: \.(py|pyi)$
+        language: system
+      - id: black
+        name: black
+        entry: poetry run black --config pyproject.toml
+        files: \.(py|pyi)$
+        language: system
+      - id: ruff
+        name: ruff
+        entry: poetry run ruff check --config pyproject.toml --fix
+        files: \.(py|pyi)$
+        language: system
+      - id: add-trailing-comma
+        name: add-trailing-comma
+        entry: poetry run add-trailing-comma
+        files: \.(py|pyi)$
+        language: system
+      - id: validate-pyproject
+        name: validate-pyproject
+        entry: poetry run validate-pyproject pyproject.toml
+        language: system
+        pass_filenames: false
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy --config-file pyproject.toml
+        files: \.(py|pyi)$
+        language: system
