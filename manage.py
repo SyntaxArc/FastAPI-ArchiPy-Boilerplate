@@ -1,5 +1,5 @@
-import asyncio
 import logging
+from contextlib import asynccontextmanager
 
 import uvicorn
 from archipy.adapters.orm.sqlalchemy.adapters import AsyncSqlAlchemyAdapter
@@ -35,8 +35,22 @@ async def async_schema_setup():
         await conn.run_sync(BaseEntity.metadata.create_all)
 
 
-asyncio.gather(async_schema_setup())
+async def startup_event():
+    logging.info("Creating database schema with async adapter")
+    await async_schema_setup()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup code
+    logging.info("Creating database schema with async adapter")
+    await async_schema_setup()
+    yield
+    # Shutdown code would go here if needed
+
+
+# Assign the lifespan handler to the app
+app.lifespan = lifespan
 
 if __name__ == "__main__":
     logging.basicConfig(
