@@ -29,6 +29,7 @@ routerV1: APIRouter = APIRouter(tags=[ApiRouterType.USER])
 @routerV1.post(
     path="/",
     response_model=CreateUserOutputDTOV1,
+    status_code=status.HTTP_201_CREATED,
     responses=Utils.get_fastapi_exception_responses(
         [
             AlreadyExistsError,
