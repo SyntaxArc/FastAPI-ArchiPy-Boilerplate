@@ -25,7 +25,6 @@ from src.repositories.user.user_repository import UserRepository
 
 
 class UserLogic:
-    @inject
     def __init__(self, repository: UserRepository) -> None:
         self._repository: UserRepository = repository
 
