@@ -1,10 +1,6 @@
 from archipy.helpers.utils.base_utils import BaseUtils
-from archipy.models.errors.custom_errors import (
-    InvalidArgumentError,
-    UnauthenticatedError,
-    UnavailableError,
-    UnknownError,
-)
+from archipy.models.errors import UnauthenticatedError, UnknownError, UnavailableError, InvalidArgumentError
+
 from fastapi import FastAPI
 
 from src.controllers.user.v1 import user_controller

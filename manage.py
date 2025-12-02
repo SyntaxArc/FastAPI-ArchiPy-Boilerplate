@@ -2,7 +2,8 @@ import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
-from archipy.adapters.orm.sqlalchemy.adapters import AsyncSqlAlchemyAdapter
+from archipy.adapters.sqlite.sqlalchemy.adapters import AsyncSQLiteSQLAlchemyAdapter
+
 from archipy.helpers.utils.app_utils import AppUtils
 from archipy.models.entities import BaseEntity
 from fastapi import FastAPI
@@ -11,35 +12,11 @@ from src.configs.containers import ServiceContainer
 from src.configs.dispatcher import set_dispatch_routes
 from src.configs.runtime_config import RuntimeConfig
 
-container: ServiceContainer = ServiceContainer()
-container.wire(packages=["src.controllers"])
-
-app: FastAPI = AppUtils.create_fastapi_app()
-app.container = container
-set_dispatch_routes(app)
 
 # TODO remove this method in production
 # This is only for this boilerplate, don`t use in production environment
 # Set up database schema with sync adapter
 logging.info("Creating database schema with sync adapter")
-
-
-async def async_schema_setup():
-    """Set up database schema for async adapter."""
-    # Use AsyncEngine.begin() for proper transaction handling
-    adapter = AsyncSqlAlchemyAdapter()
-    async with adapter.session_manager.engine.begin() as conn:
-        # Drop all tables (but only if they exist)
-        await conn.run_sync(BaseEntity.metadata.drop_all)
-        # Create all tables
-        await conn.run_sync(BaseEntity.metadata.create_all)
-
-
-async def startup_event():
-    logging.info("Creating database schema with async adapter")
-    await async_schema_setup()
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup code
@@ -49,8 +26,25 @@ async def lifespan(app: FastAPI):
     # Shutdown code would go here if needed
 
 
-# Assign the lifespan handler to the app
-app.lifespan = lifespan
+
+container: ServiceContainer = ServiceContainer()
+container.wire(packages=["src.controllers"])
+
+app: FastAPI = AppUtils.create_fastapi_app(lifespan=lifespan)
+app.container = container
+set_dispatch_routes(app)
+
+async def async_schema_setup():
+    """Set up database schema for async adapter."""
+    # Use AsyncEngine.begin() for proper transaction handling
+    adapter = AsyncSQLiteSQLAlchemyAdapter()
+    async with adapter.session_manager.engine.begin() as conn:
+        # Drop all tables (but only if they exist)
+        await conn.run_sync(BaseEntity.metadata.drop_all)
+        # Create all tables
+        await conn.run_sync(BaseEntity.metadata.create_all)
+
+
 
 if __name__ == "__main__":
     logging.basicConfig(

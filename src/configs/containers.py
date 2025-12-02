@@ -1,4 +1,4 @@
-from archipy.adapters.orm.sqlalchemy.adapters import AsyncSqlAlchemyAdapter
+from archipy.adapters.sqlite.sqlalchemy.adapters import AsyncSQLiteSQLAlchemyAdapter
 from dependency_injector import containers, providers
 
 from src.configs.runtime_config import RuntimeConfig
@@ -9,7 +9,7 @@ from src.repositories.user.user_repository import UserRepository
 
 class ServiceContainer(containers.DeclarativeContainer):
     _config: RuntimeConfig = RuntimeConfig.global_config()
-    _postgres_adapter: AsyncSqlAlchemyAdapter = providers.ThreadSafeSingleton(AsyncSqlAlchemyAdapter)
+    _postgres_adapter: AsyncSQLiteSQLAlchemyAdapter = providers.ThreadSafeSingleton(AsyncSQLiteSQLAlchemyAdapter)
     _user_postgres_adapter = providers.ThreadSafeSingleton(
         UserPostgresAdapter,
         adapter=_postgres_adapter,

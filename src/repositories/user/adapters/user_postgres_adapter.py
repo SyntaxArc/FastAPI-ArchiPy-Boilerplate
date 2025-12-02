@@ -1,8 +1,6 @@
-from archipy.adapters.orm.sqlalchemy.adapters import (
-    AsyncSqlAlchemyAdapter,
-    SqlAlchemyFilterMixin,
-)
-from archipy.adapters.orm.sqlalchemy.ports import AsyncSqlAlchemyPort
+from archipy.adapters.base.sqlalchemy.adapters import SQLAlchemyFilterMixin
+from archipy.adapters.base.sqlalchemy.ports import AsyncSQLAlchemyPort
+from archipy.adapters.sqlite.sqlalchemy.adapters import AsyncSQLiteSQLAlchemyAdapter
 from archipy.models.errors import NotFoundError
 from archipy.models.types.base_types import FilterOperationType
 from sqlalchemy import delete, select, update
@@ -21,9 +19,9 @@ from src.models.dtos.user.repository.user_repository_interface_dtos import (
 from src.models.entities.user_entity import UserEntity
 
 
-class UserPostgresAdapter(SqlAlchemyFilterMixin):
-    def __init__(self, adapter: AsyncSqlAlchemyAdapter) -> None:
-        self._adapter: AsyncSqlAlchemyPort = adapter
+class UserPostgresAdapter(SQLAlchemyFilterMixin):
+    def __init__(self, adapter: AsyncSQLiteSQLAlchemyAdapter) -> None:
+        self._adapter: AsyncSQLAlchemyPort = adapter
 
     async def create_user(self, input_dto: CreateUserCommandDTO) -> CreateUserResponseDTO:
         user: UserEntity = UserEntity(**input_dto.model_dump())

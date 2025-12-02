@@ -8,7 +8,7 @@ readme = "README.md"
 version = "0.1.0" # This vesrion set on publish flow!
 requires-python = ">=3.13,<4"
 dependencies = [
-    "archipy[fastapi,aiosqlite,sqlalchemy,dependency-injection] (>=0.11.1,<0.12.0)"
+    "archipy[fastapi,aiosqlite,postgres,sqlalchemy,dependency-injection] (>=3.15.3,<4.0.0)"
 ]
 license = { file = "LICENSE" }
 
